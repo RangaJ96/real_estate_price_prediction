@@ -13,6 +13,19 @@ class DataProcessor(util.Utilities):
     def read_data_set(self):
         return pd.read_csv(self.dataPath)
 
+
+    def data_visualization(self,dataframe,location):
+        bhk2 = dataframe[(dataframe.location == location) & (dataframe.bhk == 2)]
+        bhk3 = dataframe[(dataframe.location == location) & (dataframe.bhk == 3)]
+        matplotlib.rcParams['figure.figsize'] = (15, 10)
+        plt.scatter(bhk2.total_sqft, bhk2.price, color='blue', label='2 BHK', s=50)
+        plt.scatter(bhk3.total_sqft, bhk3.price, marker='+', color='green', label='3 BHK', s=50)
+        plt.xlabel("Total Square Feet Area")
+        plt.ylabel("Price (Lakh LKR)")
+        plt.title(location)
+        plt.legend()
+
+
     def remove_outliers(self,dataFrame):
         print(f'print the given data frame to remove outliers : \n {dataFrame.head(10)}')
         '''\n The Business Logic that was applied here is :
@@ -20,6 +33,10 @@ class DataProcessor(util.Utilities):
                 *so every data element which can not meet that criteria will be removed\n'''
         df = dataFrame[~(dataFrame.total_sqft/dataFrame.bhk < 300)]
         print(f'Data Frame after removing the outliers \n {df.head(10)}\n {df.shape}\n')
+        df1 = self.Util.remove_pps_outliers(df)
+        print(df1.shape)
+        return df1
+
 
     def feature_engineering(self, dataFrame):
         df = dataFrame.copy()
@@ -35,6 +52,7 @@ class DataProcessor(util.Utilities):
         print(f'\n{location_stat_less_than_ten}\n')
         df.location = df.location.apply(lambda x: 'other' if x in location_stat_less_than_ten else x)
         return df
+
 
     def data_pre_process(self):
         df1 = self.read_data_set()
@@ -70,7 +88,11 @@ class DataProcessor(util.Utilities):
         df5 = self.feature_engineering(df4)
 
         # remove outliers
-        self.remove_outliers(df5)
+        df6 = self.remove_outliers(df5)
+
+        self.data_visualization(df6,"Rajaji Nagar")
+
+
 
     def __init__(self, dataPath, util):
         self.dataPath = dataPath
