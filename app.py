@@ -197,7 +197,7 @@ class DataProcessor(util.Utilities):
 
         print(self.predict_price(x, trained_model, '1st Phase JP Nagar', 1000, 2, 2))
 
-        with open('banglore_home_prices_model.pickle', 'wb') as f:
+        with open('home_prices_model.pickle', 'wb') as f:
             pickle.dump(trained_model, f)
 
         columns = {
@@ -213,5 +213,5 @@ class DataProcessor(util.Utilities):
 
 if __name__ == "__main__":
     Util = util.Utilities()
-    DP = DataProcessor("Bengaluru_House_Data.csv", Util)
+    DP = DataProcessor("House_Data.csv", Util)
     DP.data_pre_process()
